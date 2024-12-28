@@ -26,6 +26,14 @@ services:
     networks:
       - mynetwork
 
+  redis:
+    image: redis:latest
+    container_name: redis_container_users_v2  # Make this unique
+    ports:
+      - "6379:6379"  # Default Redis port
+    networks:
+      - mynetwork
+
 volumes:
   postgres_data:
 

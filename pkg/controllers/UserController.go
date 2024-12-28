@@ -17,7 +17,7 @@ func NewUserController(userService *service.UserService) *UserController {
 }
 
 func (c *UserController) GetUsers(ctx *gin.Context) {
-	users, err := c.UserService.GetAllUsers()
+	users, err := c.UserService.GetAllUsers(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Could not fetch users"})
 		return

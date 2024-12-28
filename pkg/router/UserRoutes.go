@@ -15,8 +15,13 @@ func SetUpRouter() *gin.Engine {
 		log.Fatalf("failed to connect to the databse: %v", err)
 	}
 
+	redisClient, err := config.ConnectRedis()
+	if err != nil {
+		log.Fatalf("Failed to connect to Redis: %v", err)
+	}
+
 	userRepo := repository.NewRepository(db)
-	userService := service.NewUserService(userRepo)
+	userService := service.NewUserService(userRepo, redisClient)
 	userController := controllers.NewUserController(userService)
 
 	r := gin.Default()
