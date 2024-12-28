@@ -15,7 +15,7 @@ func SetUpRouter() *gin.Engine {
 		log.Fatalf("failed to connect to the databse: %v", err)
 	}
 
-	userRepo := repository.NewUserepository(db)
+	userRepo := repository.NewRepository(db)
 	userService := service.NewUserService(userRepo)
 	userController := controllers.NewUserController(userService)
 

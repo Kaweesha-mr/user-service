@@ -5,18 +5,17 @@ import (
 	"net/http"
 	"user-service/pkg/model"
 	"user-service/pkg/service"
+	"user-service/pkg/utils"
 )
 
 type UserController struct {
 	UserService *service.UserService
 }
 
-// NewUserController creates a new UserController instance
 func NewUserController(userService *service.UserService) *UserController {
 	return &UserController{UserService: userService}
 }
 
-// GetUsers handles GET requests to fetch all users
 func (c *UserController) GetUsers(ctx *gin.Context) {
 	users, err := c.UserService.GetAllUsers()
 	if err != nil {
@@ -26,13 +25,21 @@ func (c *UserController) GetUsers(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, users)
 }
 
-// CreateUser handles POST requests to create a new user
 func (c *UserController) CreateUser(ctx *gin.Context) {
 	var user model.User
 	if err := ctx.ShouldBindJSON(&user); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
 		return
 	}
+
+	// Use the reusable validation module
+	validationErrors, valid := utils.ValidateStruct(user)
+	if !valid {
+		// If validation fails, return validation errors
+		ctx.JSON(http.StatusBadRequest, gin.H{"validation_errors": validationErrors})
+		return
+	}
+
 	if err := c.UserService.CreateUser(&user); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Could not create user"})
 		return
