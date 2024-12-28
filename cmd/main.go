@@ -1,7 +1,15 @@
 package main
 
-import "fmt"
+import (
+	"log"
+	"user-service/pkg/router"
+)
 
 func main() {
-	fmt.Println("test")
+
+	r := router.SetUpRouter()
+
+	if err := r.Run(":8030"); err != nil {
+		log.Fatalf("Failed to start server: %v", err)
+	}
 }
