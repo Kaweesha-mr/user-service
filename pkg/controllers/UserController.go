@@ -40,7 +40,7 @@ func (c *UserController) CreateUser(ctx *gin.Context) {
 		return
 	}
 
-	if err := c.UserService.CreateUser(&user); err != nil {
+	if err := c.UserService.CreateUser(ctx, &user); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Could not create user"})
 		return
 	}

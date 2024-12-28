@@ -30,6 +30,7 @@ func (s *UserService) GetAllUsers(ctx context.Context) ([]model.User, error) {
 	cachedData, err := s.redisClient.Get(ctx, "users").Result()
 	if err == nil {
 
+		log.Printf("Fhit")
 		if jsonErr := json.Unmarshal([]byte(cachedData), &users); jsonErr == nil {
 			return users, nil
 		} else {
@@ -58,7 +59,18 @@ func (s *UserService) GetAllUsers(ctx context.Context) ([]model.User, error) {
 	}
 	return users, nil
 }
+func (s *UserService) CreateUser(ctx context.Context, user *model.User) error {
+	// Create the user in the database
+	err := s.UserRepo.CreateUser(user)
+	if err != nil {
+		return err
+	}
 
-func (s *UserService) CreateUser(user *model.User) error {
-	return s.UserRepo.CreateUser(user)
+	// Invalidate the cache for "users"
+	err = s.redisClient.Del(ctx, "users").Err()
+	if err != nil {
+		log.Printf("Error clearing cache: %v", err)
+	}
+
+	return nil
 }
