@@ -46,3 +46,17 @@ func (c *UserController) CreateUser(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusCreated, user)
 }
+
+func (c *UserController) GetUserById(ctx *gin.Context) {
+	userID := ctx.Param("id")
+
+	user, err := c.UserService.GetUserById(ctx, userID)
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Could not fetch user"})
+		return
+	}
+
+	ctx.JSON(http.StatusCreated, user)
+
+}

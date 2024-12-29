@@ -30,3 +30,11 @@ func (r *UserRepository) CreateUser(user *model.User) error {
 	}
 	return nil
 }
+
+func (r *UserRepository) GetUserById(id string) (model.User, error) {
+	var user model.User
+	if err := r.DB.First(&user, "id = ?", id).Error; err != nil {
+		return user, err
+	}
+	return user, nil
+}
