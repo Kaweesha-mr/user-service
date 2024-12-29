@@ -23,9 +23,9 @@ func (r *UserRepository) GetAllUsers() ([]model.User, error) {
 	return users, nil
 }
 
-// CreateUser saves a new user into the database
-func (r *UserRepository) CreateUser(user *model.User) error {
-	if err := r.DB.Create(user).Error; err != nil {
+// CreateUpdateUser saves a new user into the database
+func (r *UserRepository) CreateUpdateUser(user *model.User) error {
+	if err := r.DB.Save(user).Error; err != nil {
 		return err
 	}
 	return nil

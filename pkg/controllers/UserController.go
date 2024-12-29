@@ -60,3 +60,26 @@ func (c *UserController) GetUserById(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, user)
 
 }
+
+func (c *UserController) UpdateUser(ctx *gin.Context) {
+	var user model.User
+	if err := ctx.ShouldBindJSON(&user); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+		return
+	}
+
+	// Use the reusable validation module
+	validationErrors, valid := utils.ValidateStruct(user)
+	if !valid {
+		// If validation fails, return validation errors
+		ctx.JSON(http.StatusBadRequest, gin.H{"validation_errors": validationErrors})
+		return
+	}
+
+	if err := c.UserService.UpdateUser(ctx, &user); err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Could not create user"})
+		return
+	}
+	ctx.JSON(http.StatusCreated, user)
+
+}

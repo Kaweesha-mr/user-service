@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
 	"log"
 	"time"
@@ -59,7 +60,7 @@ func (s *UserService) GetAllUsers(ctx context.Context) ([]model.User, error) {
 }
 func (s *UserService) CreateUser(ctx context.Context, user *model.User) error {
 
-	err := s.UserRepo.CreateUser(user)
+	err := s.UserRepo.CreateUpdateUser(user)
 	if err != nil {
 		return err
 	}
@@ -109,4 +110,19 @@ func (s *UserService) GetUserById(ctx context.Context, id string) (model.User, e
 	}
 
 	return user, nil
+}
+
+func (s *UserService) UpdateUser(ctx *gin.Context, user *model.User) interface{} {
+
+	err := s.UserRepo.CreateUpdateUser(user)
+	if err != nil {
+		return err
+	}
+
+	err = s.redisClient.Del(ctx, "user"+user.ID.String()).Err()
+	if err != nil {
+		log.Printf("Error clearing cache: %v", err)
+	}
+
+	return nil
 }
