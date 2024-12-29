@@ -38,3 +38,18 @@ func (r *UserRepository) GetUserById(id string) (model.User, error) {
 	}
 	return user, nil
 }
+
+func (r *UserRepository) UserAvailable(id string) bool {
+	var user model.User
+	if err := r.DB.First(&user, "id = ?", id).Error; err != nil {
+		return true
+	}
+	return false
+}
+func (r *UserRepository) DeleteUser(id string) error {
+	// Delete the user from the database
+	if err := r.DB.Where("id = ?", id).Delete(&model.User{}).Error; err != nil {
+		return err
+	}
+	return nil
+}

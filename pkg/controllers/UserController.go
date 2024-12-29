@@ -83,3 +83,22 @@ func (c *UserController) UpdateUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, user)
 
 }
+
+func (c *UserController) DeleteUser(ctx *gin.Context) {
+	userId := ctx.Param("id") // Retrieve user ID from the URL parameter
+
+	// Check if user exists
+	if !c.UserService.IsUserAvailable(userId) {
+		ctx.JSON(404, gin.H{"error": "User not found"})
+		return
+	}
+
+	// Attempt to delete the user
+	if err := c.UserService.DeleteUser(ctx, userId); err != nil {
+		ctx.JSON(500, gin.H{"error": "Failed to delete user"})
+		return
+	}
+
+	// Return success response
+	ctx.JSON(200, gin.H{"message": "User deleted successfully"})
+}
