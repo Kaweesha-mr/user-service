@@ -119,7 +119,7 @@ func (s *UserService) UpdateUser(ctx *gin.Context, user *model.User) interface{}
 		return err
 	}
 
-	err = s.redisClient.Del(ctx, "user"+user.ID.String()).Err()
+	err = s.redisClient.Del(ctx, "user:"+user.ID.String()).Err()
 	if err != nil {
 		log.Printf("Error clearing cache: %v", err)
 	}
