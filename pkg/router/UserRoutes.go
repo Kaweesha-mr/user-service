@@ -5,6 +5,7 @@ import (
 	"log"
 	"user-service/config"
 	"user-service/pkg/controllers"
+	"user-service/pkg/middleware"
 	"user-service/pkg/repository"
 	"user-service/pkg/service"
 )
@@ -22,9 +23,11 @@ func SetUpRouter() *gin.Engine {
 
 	userRepo := repository.NewRepository(db)
 	userService := service.NewUserService(userRepo, redisClient)
+	middlewareService := service.NewMiddlewareService(redisClient)
 	userController := controllers.NewUserController(userService)
 
 	r := gin.Default()
+	r.Use(middleware.JWTMiddleware(middlewareService))
 
 	// Health Check route
 	r.GET("/", func(c *gin.Context) {
@@ -40,7 +43,6 @@ func SetUpRouter() *gin.Engine {
 		v1.POST("/users", userController.CreateUser)
 		v1.PUT("/update", userController.UpdateUser)
 		v1.DELETE("/delete/:id", userController.DeleteUser)
-		//v1.POST("/reset-password", userController.ResetPassword)
 
 	}
 

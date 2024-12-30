@@ -58,6 +58,7 @@ func (s *UserService) GetAllUsers(ctx context.Context) ([]model.User, error) {
 	}
 	return users, nil
 }
+
 func (s *UserService) CreateUser(ctx context.Context, user *model.User) error {
 
 	err := s.UserRepo.CreateUpdateUser(user)
@@ -72,6 +73,7 @@ func (s *UserService) CreateUser(ctx context.Context, user *model.User) error {
 
 	return nil
 }
+
 func (s *UserService) GetUserById(ctx context.Context, id string) (model.User, error) {
 	// Check cache first
 	var user model.User
@@ -110,6 +112,7 @@ func (s *UserService) GetUserById(ctx context.Context, id string) (model.User, e
 
 	return user, nil
 }
+
 func (s *UserService) UpdateUser(ctx *gin.Context, user *model.User) interface{} {
 
 	err := s.UserRepo.CreateUpdateUser(user)
@@ -124,6 +127,7 @@ func (s *UserService) UpdateUser(ctx *gin.Context, user *model.User) interface{}
 
 	return nil
 }
+
 func (s *UserService) IsUserAvailable(id string) bool {
 	return s.UserRepo.UserAvailable(id)
 }

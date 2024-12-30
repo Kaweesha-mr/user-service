@@ -23,7 +23,6 @@ func (r *UserRepository) GetAllUsers() ([]model.User, error) {
 	return users, nil
 }
 
-// CreateUpdateUser saves a new user into the database
 func (r *UserRepository) CreateUpdateUser(user *model.User) error {
 	if err := r.DB.Save(user).Error; err != nil {
 		return err
@@ -46,6 +45,7 @@ func (r *UserRepository) UserAvailable(id string) bool {
 	}
 	return false
 }
+
 func (r *UserRepository) DeleteUser(id string) error {
 	// Delete the user from the database
 	if err := r.DB.Where("id = ?", id).Delete(&model.User{}).Error; err != nil {
